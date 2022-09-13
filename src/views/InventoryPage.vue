@@ -3,7 +3,7 @@
   <main>
     <div class="container inventory-container">
       <div class="cars-inventory__sidebar"
-        :class="{'visible-sidebar' : isVisibleSidebar}"
+           :class="{'visible-sidebar' : isVisibleSidebar}"
       >
         <button
             class="sidebar-close__btn"
@@ -13,108 +13,157 @@
         <div class="sidebar-wrap">
           <div class="sidebar-top">
             <h3 class="sidebar-title">Detailed search</h3>
-            <button class="sidebar-clear">Clear filters</button>
+            <button class="sidebar-clear" @click="clearFilter">Clear filters</button>
           </div>
           <div class="sidebar-content">
             <v-accordion class="sidebar-filter">
               <template v-slot:title>Make, Model</template>
               <template v-slot:content>
-
+                <div class="sidebar-filter__content">
+                  <div class="make-filter">
+                    <p class="makemodel-filter__title">Make</p>
+                    <input
+                        type="text"
+                        class="makemodel-filter__search"
+                        placeholder="Search Make..."
+                        @click="this.makesVisible = true"
+                        v-model="makeSearch"
+                    >
+                    <ul class="makemodel-filter__items" v-if="makesVisible">
+                      <li
+                          class="makemodel-filter__item"
+                          v-for="carMake in searchMakes"
+                          :key="carMake.id"
+                      >
+                        <input
+                            type="checkbox"
+                            :id="carMake.value"
+                            v-model="filteredMakes"
+                            :value="carMake.value"
+                            @change="totalFiltres"
+                        >
+                        <label :for="carMake.value">{{ carMake.name }}</label>
+                      </li>
+                      <li
+                          class="nothing-makemodels makemodel-filter__item"
+                          v-if="this.searchMakes.length===0"
+                      >
+                        Nothing found
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="model-filter">
+                    <p class="makemodel-filter__title">Model</p>
+                    <input
+                        type="text"
+                        class="makemodel-filter__search"
+                        placeholder="Search Make..."
+                        @click="this.modelVisible = true"
+                        v-model="modelSearch"
+                    >
+                    <ul class="makemodel-filter__items" v-if="modelVisible">
+                      <li
+                          class="makemodel-filter__item"
+                          v-for="carModel in searchModels"
+                          :key="carModel.id"
+                      >
+                        <input
+                            type="checkbox"
+                            :id="carModel.value"
+                            v-model="filteredModels"
+                            :value="carModel.value"
+                            @change="totalFiltres"
+                        >
+                        <label :for="carModel.value">{{ carModel.name }}</label>
+                      </li>
+                      <li
+                          class="nothing-makemodels makemodel-filter__item"
+                          v-if="this.searchModels.length===0"
+                      >
+                        Nothing found
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </template>
+              <template v-slot:accordion-footer>
+                <span
+                    class="selected-filtres__item"
+                    v-for="carMake in filteredMakes"
+                    :key="carMake.id"
+                    @click="delMake(carMake)"
+                >
+                  {{carMake}}
+                </span>
+                <span
+                    class="selected-filtres__item"
+                    v-for="carMake in filteredModels"
+                    :key="carMake.id"
+                    @click="delModel(carMake)"
+                >
+                  {{carMake}}
+                </span>
               </template>
             </v-accordion>
             <v-accordion class="sidebar-filter">
               <template v-slot:title>Body type</template>
               <template v-slot:content>
                 <ul class="sidebar-filter__content">
-                  <li class="sidebar-filter__item">
+                  <li class="sidebar-filter__item" v-for="carBodyType in carBodyTypes" :key="carBodyType.id">
                     <input
                         type="checkbox"
-                        id="trucks"
+                        :id="carBodyType.value"
                         v-model="bodyTypes"
-                        value="trucks"
+                        @change="totalFiltres"
+                        :value="carBodyType.value"
                     >
-                    <label for="trucks"><span></span>Trucks</label>
-                  </li>
-                  <li class="sidebar-filter__item">
-                    <input
-                        type="checkbox"
-                        id="suv"
-                        v-model="bodyTypes"
-                        value="suv"
-                    >
-                    <label for="suv"><span></span>SUV</label>
-                  </li>
-                  <li class="sidebar-filter__item">
-                    <input
-                        type="checkbox"
-                        id="sedan"
-                        v-model="bodyTypes"
-                        value="sedan"
-                    >
-                    <label for="sedan"><span></span>Sedan</label>
-                  </li>
-                  <li class="sidebar-filter__item">
-                    <input
-                        type="checkbox"
-                        id="hatchback"
-                        v-model="bodyTypes"
-                        value="hatchback"
-                    >
-                    <label for="hatchback"><span></span>Hatchback</label>
-                  </li>
-                  <li class="sidebar-filter__item">
-                    <input
-                        type="checkbox"
-                        id="coupe"
-                        v-model="bodyTypes"
-                        value="coupe"
-                    >
-                    <label for="coupe"><span></span>Coupe</label>
-                  </li>
-                  <li class="sidebar-filter__item">
-                    <input
-                        type="checkbox"
-                        id="convertiable"
-                        v-model="bodyTypes"
-                        value="convertiable"
-                    >
-                    <label for="convertiable"><span></span>Convertiable</label>
-                  </li>
-                  <li class="sidebar-filter__item">
-                    <input
-                        type="checkbox"
-                        id="van"
-                        v-model="bodyTypes"
-                        value="van"
-                    >
-                    <label for="van"><span></span>VAN</label>
+                    <label class="sidebar-filter__item-title" :for="carBodyType.value">
+                      <span></span>
+                      <img
+                          :src=" require('@/assets/img/icons/bodytypes/' + carBodyType.img) "
+                          :alt="carBodyType.name"
+                      >
+                      {{ carBodyType.name }}
+                    </label>
                   </li>
                 </ul>
+              </template>
+              <template v-slot:accordion-footer>
+                <span
+                    class="selected-filtres__item"
+                    v-for="carBodyType in bodyTypes"
+                    :key="carBodyType.id"
+                    @click="delBodyType(carBodyType)"
+                >
+                  {{carBodyType}}
+                </span>
               </template>
             </v-accordion>
             <v-accordion class="sidebar-filter">
               <template v-slot:title>Transmission</template>
               <template v-slot:content>
                 <ul class="sidebar-filter__content">
-                  <li class="sidebar-filter__item">
+                  <li class="sidebar-filter__item" v-for="carTransmission in carTransmissions" :key="carTransmission.id">
                     <input
                         type="checkbox"
-                        id="automatic"
-                        value="automatic"
+                        :id="carTransmission.value"
+                        :value="carTransmission.value"
                         v-model="transmissions"
+                        @change="totalFiltres"
                     >
-                    <label for="automatic"><span></span>Automatic</label>
+                    <label :for="carTransmission.value"><span></span>{{ carTransmission.name }}</label>
                   </li>
-                  <li class="sidebar-filter__item">
-                    <input
-                        type="checkbox"
-                        id="manual"
-                        value="manual"
-                        v-model="transmissions"
-                    >
-                    <label for="manual"><span></span>Manual</label>
-                  </li>
-                </ul>                
+                </ul>
+              </template>
+              <template v-slot:accordion-footer>
+                <span
+                    class="selected-filtres__item"
+                    v-for="carTransmission in transmissions"
+                    :key="carTransmission.index"
+                    @click="delTransmission(carTransmission)"
+                >
+                  {{carTransmission}}
+                </span>
               </template>
             </v-accordion>
             <v-accordion class="sidebar-filter">
@@ -130,30 +179,120 @@
                       min="1000"
                       max="100000"
                       step="100"
-                      v-model="minPrice"
-                      @change="setFilterPrice"
+                      v-model.number="minPrice"
+                      @change="totalFiltres"
                   >
                   <input
                       type="range"
                       min="1000"
                       max="100000"
                       step="100"
-                      v-model="maxPrice"
-                      @change="setFilterPrice"
+                      v-model.number="maxPrice"
+                      @change="totalFiltres"
                   >
                 </div>
+              </template>
+              <template v-slot:accordion-footer>
+                <span
+                    class="selected-filtres__item"
+                    v-if="minPrice !== 1000"
+                    @click="minPrice = 1000"
+                >
+                  $ {{minPrice}}
+                </span>
+                <span
+                    class="selected-filtres__item"
+                    v-if="maxPrice !== 100000"
+                    @click="maxPrice = 100000"
+                >
+                  $ {{maxPrice}}
+                </span>
               </template>
             </v-accordion>
             <v-accordion class="sidebar-filter">
               <template v-slot:title>Year</template>
               <template v-slot:content>
-                <div></div>
+                <div class="sidebar-filter__range-num">
+                  <span>{{minYear}}</span>
+                  <span>{{maxYear}}</span>
+                </div>
+                <div class="sidebar-filter__range-slider">
+                  <input
+                      type="range"
+                      min="2000"
+                      max="2022"
+                      step="1"
+                      v-model.number="minYear"
+                      @change="totalFiltres"
+                  >
+                  <input
+                      type="range"
+                      min="2000"
+                      max="2022"
+                      step="1"
+                      v-model.number="maxYear"
+                      @change="totalFiltres"
+                  >
+                </div>
+              </template>
+              <template v-slot:accordion-footer>
+                <span
+                    class="selected-filtres__item"
+                    v-if="minYear !== 2000"
+                    @click="minYear = 2000"
+                >
+                  {{minYear}}
+                </span>
+                <span
+                    class="selected-filtres__item"
+                    v-if="maxYear !== 2022"
+                    @click="maxYear = 2022"
+                >
+                  {{maxYear}}
+                </span>
               </template>
             </v-accordion>
             <v-accordion class="sidebar-filter">
               <template v-slot:title>Kilometres</template>
               <template v-slot:content>
-                <div></div>
+                <div class="sidebar-filter__range-num">
+                  <span>{{minKm}}</span>
+                  <span>{{maxKm}}</span>
+                </div>
+                <div class="sidebar-filter__range-slider">
+                  <input
+                      type="range"
+                      min="0"
+                      max="300000"
+                      step="1000"
+                      v-model.number="minKm"
+                      @change="totalFiltres"
+                  >
+                  <input
+                      type="range"
+                      min="0"
+                      max="300000"
+                      step="1000"
+                      v-model.number="maxKm"
+                      @change="totalFiltres"
+                  >
+                </div>
+              </template>
+              <template v-slot:accordion-footer>
+                <span
+                    class="selected-filtres__item"
+                    v-if="minKm !== 0"
+                    @click="minKm = 0"
+                >
+                  {{minKm}} km
+                </span>
+                <span
+                    class="selected-filtres__item"
+                    v-if="maxKm !== 300000"
+                    @click="maxKm = 300000"
+                >
+                  {{maxKm}} km
+                </span>
               </template>
             </v-accordion>
           </div>
@@ -164,40 +303,43 @@
         <div class="cars-inventory__header">
           <div class="cars-inventory__header-media__btn">
             <button class="open-filter-btn"
-              @click="openSidebar"
+                    @click="openSidebar"
             >
               <img src="@/assets/img/icons/filter-icon.svg" alt="filter">
             </button>
             <button class="sidebar-clear">Clear filters</button>
           </div>
-          <input
-              type="text"
-              class="inventory-search"
-              v-model="search"
-              placeholder="Find a dream car..."
-          >
+          <div class="inventory-search">
+            <input
+                type="text"
+                v-model="search"
+                placeholder="Find a dream car..."
+                @input="totalFiltres"
+            >
+          </div>
           <div class="inventory-sorted">
             <span>Sorted by</span>
 
-            <select
-                v-model="selectedSort"
-                @change="changeOption"
-                name="sorted-cars"
-                id="sorted-cars"
-                class="inventory-sorted__params"
-            >
-              <option value="recommendations">Recommendations</option>
-              <option value="miliage">Newest inventory</option>
-              <option value="price">Lowest price</option>
-              <option value="price">Highest price</option>
-            </select>
+            <v-select
+                class="sorted-options"
+                :options = "sortParamOptions"
+                @select="sortedCarsByParams"
+                :selected="selectedSortParam"
+            />
 
           </div>
         </div>
-          <inventory-pagination
-              :inventoryItem_data="filteredList"
-              :size="6"
-          />
+        <inventory-pagination
+            :inventoryItem_data="finalFilteredCars"
+            :size="6"
+        >
+          <div class="no-matches-msg" v-if="filteredCars.length===0">
+            <img src="@/assets/img/icons/404.svg" alt="no-matches" class="no-matches-msg__img">
+            <h3 class="no-matches-msg__title">Unfortunately there are no matches for your query.</h3>
+            <p class="no-matches-msg__text">Try using other filter settings or request a car of your choice.</p>
+            <router-link class="no-matches-msg__link" to='/request'>Request a car</router-link>
+          </div>
+        </inventory-pagination>
       </div>
     </div>
   </main>
@@ -211,22 +353,24 @@ import CarItem from "@/components/inventory/car-item";
 import VAccordion from "@/components/v-accordion";
 import VBtn from "@/components/v-btn";
 import InventoryPagination from "@/components/inventory/inventory-pagunator";
+import VSelect from "@/components/v-select";
 export default {
   name: "inventory-page",
-  components: {InventoryPagination, VBtn, VAccordion, CarItem, Footer, Header},
+  components: {VSelect, InventoryPagination, VBtn, VAccordion, CarItem, Footer, Header},
   data(){
     return {
       cars: [
         {
           id: 1,
           brand: 'Porsche',
-          model: 'Panamera II Turbo S E-Hybrid',
+          model: 'Panamera',
           bodyType: 'Sedan',
           transmission: 'automatic',
           price: 34000,
           year: 2015,
           miliage: 120000,
-          photo: 'porsche-panamera.jpg'
+          photo: 'porsche-panamera.jpg',
+          rating: 99254,
         },
         {
           id: 2,
@@ -237,7 +381,8 @@ export default {
           price: 50000,
           year: 2017,
           miliage: 175000,
-          photo: 'mercedes-benz-cla.jpg'
+          photo: 'mercedes-benz-cla.jpg',
+          rating: 97185
         },
         {
           id: 3,
@@ -248,7 +393,8 @@ export default {
           price: 25500,
           year: 2009,
           miliage: 90000,
-          photo: 'audi-a7.jpg'
+          photo: 'audi-a7.jpg',
+          rating: 93365
         },
         {
           id: 4,
@@ -259,7 +405,8 @@ export default {
           price: 9000,
           year: 2018,
           miliage: 46000,
-          photo: 'ford-fiesta.webp'
+          photo: 'ford-fiesta.webp',
+          rating: 89389
         },
         {
           id: 5,
@@ -270,7 +417,8 @@ export default {
           price: 8900,
           year: 2009,
           miliage: 130000,
-          photo: 'ford-ka.webp'
+          photo: 'ford-ka.webp',
+          rating: 87164
         },
         {
           id: 6,
@@ -281,7 +429,8 @@ export default {
           price: 39900,
           year: 2013,
           miliage: 189000,
-          photo: 'porsche-cayenne.webp'
+          photo: 'porsche-cayenne.webp',
+          rating: 82623
         },
         {
           id: 7,
@@ -292,7 +441,8 @@ export default {
           price: 25000,
           year: 2015,
           miliage: 139000,
-          photo: 'mercedes-benz-w124.jpg'
+          photo: 'mercedes-benz-w124.jpg',
+          rating: 70547
         },
         {
           id: 8,
@@ -303,7 +453,8 @@ export default {
           price: 29000,
           year: 2017,
           miliage: 156000,
-          photo: 'mitsubishi-outlander.jpg'
+          photo: 'mitsubishi-outlander.jpg',
+          rating: 68862
         },
         {
           id: 9,
@@ -314,7 +465,8 @@ export default {
           price: 25500,
           year: 2019,
           miliage: 24000,
-          photo: 'nissan-leaf.webp'
+          photo: 'nissan-leaf.webp',
+          rating: 67741
         },
         {
           id: 10,
@@ -325,7 +477,8 @@ export default {
           price: 14000,
           year: 2019,
           miliage: 51000,
-          photo: 'opel-astra.webp'
+          photo: 'opel-astra.webp',
+          rating: 59514
         },
         {
           id: 11,
@@ -336,7 +489,8 @@ export default {
           price: 14500,
           year: 2014,
           miliage: 135000,
-          photo: 'opel-vivaro.webp'
+          photo: 'opel-vivaro.webp',
+          rating: 54962
         },
         {
           id: 12,
@@ -347,7 +501,8 @@ export default {
           price: 7350,
           year: 2008,
           miliage: 240000,
-          photo: 'toyota-avensis.webp'
+          photo: 'toyota-avensis.webp',
+          rating: 51632
         },
         {
           id: 13,
@@ -358,7 +513,8 @@ export default {
           price: 38000,
           year: 2022,
           miliage: 5000,
-          photo: 'toyota-hilux.webp'
+          photo: 'toyota-hilux.webp',
+          rating: 40321
         },
         {
           id: 14,
@@ -369,7 +525,8 @@ export default {
           price: 16700,
           year: 2008,
           miliage: 180000,
-          photo: 'toyota-land-cruiser-prado.webp'
+          photo: 'toyota-land-cruiser-prado.webp',
+          rating: 35210
         },
         {
           id: 15,
@@ -380,7 +537,8 @@ export default {
           price: 15150,
           year: 2012,
           miliage: 205000,
-          photo: 'volkswagen-sharan.webp'
+          photo: 'volkswagen-sharan.webp',
+          rating: 22459
         },
         {
           id: 16,
@@ -391,16 +549,239 @@ export default {
           price: 12300,
           year: 2008,
           miliage: 250000,
-          photo: 'nissan-navara.webp'
+          photo: 'nissan-navara.webp',
+          rating: 19824
         },
       ],
-      selectedSort: "recommendations",
+      filteredCars: [],
+      sorteredCars: [],
+
+      carMakes: [
+        {
+          id: 1,
+          name: 'Porsche',
+          value: 'porsche'
+        },
+        {
+          id: 2,
+          name: 'Mersedes-Benz',
+          value: 'mersedes-benz'
+        },
+        {
+          id: 3,
+          name: 'Audi',
+          value: 'audi'
+        },
+        {
+          id: 4,
+          name: 'Ford',
+          value: 'ford'
+        },
+        {
+          id: 5,
+          name: 'Opel',
+          value: 'opel'
+        },
+        {
+          id: 6,
+          name: 'Toyota',
+          value: 'toyota'
+        },
+        {
+          id: 7,
+          name: 'Nissan',
+          value: 'nissan'
+        },
+        {
+          id: 8,
+          name: 'Mitsubishi',
+          value: 'mitsubishi'
+        },
+        {
+          id: 9,
+          name: 'Volksvagen',
+          value: 'volksvagen'
+        },
+      ],
+      carModels: [
+        {
+          id: 1,
+          name: 'Panamera',
+          value: 'panamera',
+        },
+        {
+          id: 2,
+          name: 'CLA',
+          value: 'cla',
+        },
+        {
+          id: 3,
+          name: 'A7',
+          value: 'a7',
+        },
+        {
+          id: 4,
+          name: 'Fiesta',
+          value: 'fiesta',
+        },
+        {
+          id: 5,
+          name: 'Ka',
+          value: 'ka'
+        },
+        {
+          id: 6,
+          name: 'Cayenne',
+          value: 'cayenne',
+        },
+        {
+          id: 7,
+          name: 'W124',
+          value: 'w124',
+        },
+        {
+          id: 8,
+          name: 'Outlander',
+          value: 'outlander',
+        },
+        {
+          id: 9,
+          name: 'Leaf',
+          value: 'leaf',
+        },
+        {
+          id: 10,
+          name: 'Astra',
+          value: 'astra',
+        },
+        {
+          id: 11,
+          name: 'Vivaro',
+          value: 'vivaro',
+        },
+        {
+          id: 12,
+          name: 'Avensis',
+          value: 'avensis',
+        },
+        {
+          id: 13,
+          name: 'Hilux',
+          value: 'hilux',
+        },
+        {
+          id: 14,
+          name: 'Prado',
+          value: 'prado',
+        },
+        {
+          id: 15,
+          name: 'Sharan',
+          value: 'sharan',
+        },
+        {
+          id: 16,
+          name: 'Navara',
+          value: 'navara',
+        },
+      ],
+      carBodyTypes: [
+        {
+          id: 1,
+          name: 'Trucks',
+          value: 'trucks',
+          img: 'trucks.svg'
+        },
+        {
+          id: 2,
+          name: 'SUV',
+          value: 'suv',
+          img: 'suv.svg'
+        },
+        {
+          id: 3,
+          name: 'Sedan',
+          value: 'sedan',
+          img: 'sedan.svg'
+        },
+        {
+          id: 4,
+          name: 'Hatchback',
+          value: 'hatchback',
+          img: 'hatchback.svg'
+        },
+        {
+          id: 5,
+          name: 'Coupe',
+          value: 'coupe',
+          img: 'coupe.svg'
+        },
+        {
+          id: 6,
+          name: 'Convertiable',
+          value: 'convertiable',
+          img: 'convertiable.svg'
+        },
+        {
+          id: 7,
+          name: 'VAN',
+          value: 'van',
+          img: 'van.svg'
+        },
+      ],
+      carTransmissions: [
+        {
+          id: 1,
+          name: 'Automatic',
+          value: 'automatic'
+        },
+        {
+          id: 2,
+          name: 'Manual',
+          value: 'manual'
+        },
+      ],
+
+      selectedSortParam: "Recommendations",
+      valueOfSortParam: "recommendations",
+
+      sortParamOptions: [
+        {
+          value: 'recommendations',
+          name: 'Recommendations'
+        },
+        {
+          value: 'sortByNewest',
+          name: 'Newest inventory'
+        },
+        {
+          value: 'sortByLowestPrice',
+          name: 'Lowest price'
+        },
+        {
+          value: 'sortByHighestPrice',
+          name: 'Highest prices'
+        },
+      ],
+      filteredMakes: [],
+      filteredModels: [],
       transmissions: [],
       bodyTypes: [],
+      filteredPrice: [],
+      filteredYear: [],
+      filteredKilometres: [],
       isVisibleSidebar: false,
+      makesVisible: false,
+      modelVisible: false,
       minPrice: 1000,
       maxPrice: 100000,
-      search: ''
+      minYear: 2000,
+      maxYear: 2022,
+      minKm: 0,
+      maxKm: 300000,
+      search: '',
+      makeSearch: '',
+      modelSearch: '',
     }
   },
   methods: {
@@ -416,42 +797,176 @@ export default {
         this.maxPrice = this.minPrice;
         this.minPrice = temp;
       }
+      this.filterByPrice()
+    },
+    setFilterYear() {
+      if(this.minYear > this.maxYear) {
+        let temp = this.maxYear;
+        this.maxYear = this.minYear;
+        this.minYear = temp;
+      }
+      this.filterByYear()
+    },
+    setFilterKm() {
+      if(this.minKm > this.maxKm) {
+        let temp = this.maxKm;
+        this.maxKm = this.minKm;
+        this.minKm = temp;
+      }
+      this.filterByKm()
     },
     changeOption(event) {
       this.selectedSort = event.target.value
+    },
+
+    filterDataTransmission() {
+      if (this.transmissions.length > 0) {
+        this.filteredCars = this.filteredCars.filter(x => this.transmissions.indexOf(x.transmission.toString().toLowerCase()) != -1);
+      } else {
+        return this.filteredCars
+      }
+      return this.filteredCars
+    },
+    filterDataMake() {
+      if ( this.filteredMakes.length > 0 ){
+        this.filteredCars = this.filteredCars.filter(x => this.filteredMakes.indexOf(x.brand.toString().toLowerCase()) != -1);
+      } else {
+        return this.filteredCars
+      }
+      return this.filteredCars
+    },
+    filterDataModel() {
+      if ( this.filteredModels.length > 0 ){
+        this.filteredCars = this.filteredCars.filter(x => this.filteredModels.indexOf(x.model.toString().toLowerCase()) != -1);
+      } else {
+        return this.filteredCars
+      }
+      return this.filteredCars
+    },
+    filterDataBodyType() {
+      if ( this.bodyTypes.length > 0 ){
+        this.filteredCars = this.filteredCars.filter(x => this.bodyTypes.indexOf(x.bodyType.toString().toLowerCase()) != -1);
+      } else {
+        return this.filteredCars
+      }
+      return this.filteredCars
+    },
+    filterByPrice() {
+      let vm = this;
+      this.filteredCars = this.filteredCars.filter(function (item) {
+        return item.price >= vm.minPrice && item.price <= vm.maxPrice;
+      })
+      return this.filteredCars
+    },
+    filterByYear() {
+      let vm = this;
+      this.filteredCars = this.filteredCars.filter(function (item) {
+        return item.year >= vm.minYear && item.year <= vm.maxYear;
+      })
+      return this.filteredCars
+    },
+    filterByKm() {
+      let vm = this;
+      this.filteredCars = this.filteredCars.filter(function (item) {
+        return item.miliage >= vm.minKm && item.miliage <= vm.maxKm;
+      })
+      return this.filteredCars
+    },
+    filteredList() {
+      let vm = this;
+      this.filteredCars = this.filteredCars.filter(function (item) {
+        return item.brand.toLowerCase().includes(vm.search.toLowerCase()) || item.model.toLowerCase().includes(vm.search.toLowerCase())
+      })
+      return this.filteredCars
+    },
+    delMake(carMake){
+      let indexCar = this.filteredMakes.indexOf(carMake);
+      this.filteredMakes.splice(indexCar, 1);
+    },
+    delModel(carMake){
+      let indexCar = this.filteredModels.indexOf(carMake);
+      this.filteredModels.splice(indexCar, 1);
+    },
+    delBodyType(carBodyType){
+      let indexCar = this.bodyTypes.indexOf(carBodyType);
+      this.bodyTypes.splice(indexCar, 1);
+    },
+    delTransmission(carTransmission){
+      let indexCar = this.transmissions.indexOf(carTransmission);
+      this.transmissions.splice(indexCar, 1);
+    },
+    clearFilter() {
+      this.filteredMakes = [];
+      this.filteredModels = [];
+      this.transmissions = [];
+      this.bodyTypes = [];
+      this.minPrice = 1000;
+      this.maxPrice = 100000;
+      this.minYear = 2000;
+      this.maxYear = 2022;
+      this.minKm = 0;
+      this.maxKm = 300000;
+      this.search = '';
+      this.valueOfSortParam = "recommendations";
+      this.selectedSortParam = "Recommendations";
+    },
+
+    sortedCarsByParams(sortParam) {
+      this.selectedSortParam = sortParam.name;
+      this.valueOfSortParam = sortParam.value;
+    },
+
+    isActiveSort() {
+      this.sorteredCars = this.filteredCars;
+      if(this.valueOfSortParam === "recommendations") {
+        this.filteredCars = this.sorteredCars.sort(sortRating)
+        // this.filteredCars = this.cars;
+        return this.filteredCars;
+      } else if(this.valueOfSortParam === "sortByLowestPrice") {
+        this.filteredCars = this.sorteredCars.sort(sortLowestPrice)
+        return this.filteredCars;
+      } else if(this.valueOfSortParam === "sortByNewest") {
+        this.filteredCars = this.sorteredCars.sort(sortNewestYear)
+        return this.filteredCars;
+      } else if(this.valueOfSortParam === "sortByHighestPrice") {
+        this.filteredCars = this.sorteredCars.sort(sortHighestPrice)
+        return this.filteredCars;
+      }
+      return this.filteredCars;
+    },
+
+    totalFiltres() {
+      this.filteredCars = this.cars;
+      this.filterByPrice();
+      this.filterByYear();
+      this.filterByKm();
+      this.filterDataBodyType();
+      this.filterDataTransmission();
+      this.filterDataMake();
+      this.filterDataModel();
+      this.filteredList();
+      this.isActiveSort();
+      return this.filteredCars
     }
   },
   computed: {
-    filterDataBodyType() {
-      let data = []
-      // если есть выбранные чекбоксы
-      if ( this.bodyTypes.length ){
-        // фильтруем данные
-        data = this.cars.filter(x => this.bodyTypes.indexOf(x.bodyType.toString().toLowerCase()) != -1);
-      } else {
-        // иначе отдаем все данные из массива
-        data = this.cars
-      }
-      return data
+
+    finalFilteredCars() {
+      return this.totalFiltres()
     },
-    filteredList() {
-      return this.filterDataBodyType.filter(post => {
-        return post.brand.toLowerCase().includes(this.search.toLowerCase()) || post.model.toLowerCase().includes(this.search.toLowerCase())
+    searchMakes() {
+      return this.carMakes.filter(carMake => {
+        return carMake.name.toLowerCase().includes(this.makeSearch.toLowerCase())
       })
     },
-    filterDataTransmission() {
-      let data = []
-      // если есть выбранные чекбоксы
-      if ( this.transmissions.length ){
-        // фильтруем данные
-        data = this.filterDataBodyType.filter(x => this.transmissions.indexOf(x.transmission.toString().toLowerCase()) != -1);
-      } else {
-        // иначе отдаем все данные из массива
-        data = this.cars
-      }
-      return data
+    searchModels() {
+      return this.carModels.filter(carModel => {
+        return carModel.name.toLowerCase().includes(this.modelSearch.toLowerCase())
+      })
     },
+
   },
+
   watch: {
     isVisibleSidebar: function (isVisibleSidebar) {
       let bodyClass = 'lock';
@@ -462,7 +977,14 @@ export default {
       }
     },
   },
+
 }
+
+let sortRating = function (d1, d2) { return (d1.rating < d2.rating) ? 1 : -1; };
+let sortNewestYear = function (d1, d2) { return (d1.year < d2.year) ? 1 : -1; };
+let sortLowestPrice = function (d1, d2) { return (d1.price > d2.price) ? 1 : -1; };
+let sortHighestPrice = function (d1, d2) { return (d1.price < d2.price) ? 1 : -1; };
+
 </script>
 
 <style lang="sass">
@@ -524,11 +1046,13 @@ export default {
     right: 15px
   .accordion-content
     padding-right: 20px
+.sidebar-filter__item-title
+  cursor: pointer
 
 .sidebar-apply
   display: none
 
-//-----------CHECKBOX---------------
+//---------------------------CHECKBOX-------------------
 .sidebar-filter__content
   font-weight: 600
   font-size: 16px
@@ -560,7 +1084,7 @@ export default {
     content: "\2713"
     color: #7481FF
 
-//----------------RANGE---------------
+//------------------------------RANGE-SLIDER--------------------
 .sidebar-filter__range-num
   display: flex
   justify-content: space-between
@@ -586,6 +1110,7 @@ export default {
     position: relative
     top: 2px
     margin-top: -7px
+    cursor: pointer
 
 //------------CLOSE-BUTTON------------
 .sidebar-close__btn
@@ -626,18 +1151,29 @@ export default {
 .inventory-sorted
   display: flex
   align-items: center
-  gap: 20px
+  justify-content: space-between
+  width: 45%
 .inventory-search
+  position: relative
   width: calc(350px/860px*100%)
-  outline: none
-  box-sizing: border-box
-  padding: 12px 20px
-  border: 1px solid #D7D7D7
-  border-radius: 2px
-  font-weight: 600
-  font-size: 16px
-  line-height: 14px
-  color: #41456B
+  input
+    outline: none
+    width: 100%
+    box-sizing: border-box
+    padding: 12px 20px
+    border: 1px solid #D7D7D7
+    border-radius: 2px
+    font-weight: 600
+    font-size: 16px
+    line-height: 14px
+    color: #41456B
+  &:after
+    position: absolute
+    content: url("@/assets/img/icons/search.svg")
+    height: 24px
+    width: 24px
+    top: 10px
+    right: 20px
 .inventory-sorted
   span
     font-weight: 400
@@ -654,7 +1190,124 @@ export default {
   border-radius: 2px
   padding: 12px 80px 12px 20px
 
-//-------------MEDIA--------------
+//------------------------------------selected-filtres-----------------------
+.accordion-footer
+  display: flex
+  flex-wrap: wrap
+  gap: 10px
+.selected-filtres__item
+  display: inline-block
+  margin-bottom: 10px
+  padding: 10px 10px 10px 30px
+  background: rgba(116, 129, 255, 0.2)
+  border-radius: 2px
+  font-weight: 700
+  font-size: 16px
+  line-height: 14px
+  text-align: center
+  letter-spacing: 0.02em
+  text-transform: uppercase
+  color: #41456B
+  cursor: pointer
+  position: relative
+  &:hover
+    background: rgba(116, 130, 255, 0.4)
+  &::before,
+  &::after
+    content: ''
+    position: absolute
+    top: 15px
+    left: 10px
+    display: block
+    width: 14px
+    height: 2px
+    background: #7481FF
+  &::before
+    transform: rotate(45deg)
+  &::after
+    transform: rotate(-45deg)
+  label
+    cursor: pointer
+
+//--------------------------------MAKES-MODELS-------------------------
+.make-filter
+  margin-bottom: 20px
+.makemodel-filter__title
+  margin-bottom: 10px
+  font-weight: 600
+  font-size: 16px
+  line-height: 14px
+  color: #41456B
+
+.makemodel-filter__search
+  width: 100%
+  outline: none
+  box-sizing: border-box
+  padding: 12px 20px
+  border: 1px solid #D7D7D7
+  border-radius: 2px
+  color: #41456B
+  font-weight: 500
+  font-size: 16px
+  line-height: 159%
+  &::placeholder
+    color: #D7D7D7
+
+.makemodel-filter__items
+  display: flex
+  flex-direction: column
+  gap: 10px
+  padding: 20px
+  height: 155px
+  border: 1px solid #D7D7D7
+  overflow: scroll
+
+.makemodel-filter__item
+  cursor: pointer
+  font-weight: 600
+  font-size: 16px
+  line-height: 14px
+  color: #41456B
+  &:hover
+    opacity: .7
+  input
+    display: none
+  label
+    cursor: pointer
+
+//----------------------------NO-MATCHES-------------------------------
+.no-matches-msg
+  background: #FFFFFF
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1)
+  border-radius: 5px
+  width: 100%
+  box-sizing: border-box
+  padding: 60px
+  &__title
+    font-weight: 600
+    font-size: 20px
+    line-height: 25px
+    color: #41456B
+    margin: 20px 0
+  &__text
+    font-weight: 400
+    font-size: 16px
+    line-height: 180%
+    letter-spacing: 0.02em
+    color: #41456B
+    margin-bottom: 20px
+  &__link
+    font-weight: 700
+    font-size: 16px
+    line-height: 14px
+    letter-spacing: 0.02em
+    text-transform: uppercase
+    color: #7481FF
+
+//---------------------------------SORTED----------------------------------
+
+
+//-------------------------------MEDIA-----------------------------------------
 @media screen and (max-width: 1024px)
   .cars-inventory__header-media__btn
     display: flex
@@ -699,7 +1352,8 @@ export default {
   .inventory-sorted
     span
       display: none
-  .inventory-search
+  .inventory-search,
+  .inventory-sorted
     width: 33%
 
 @media screen and (max-width: 767px)
@@ -709,10 +1363,11 @@ export default {
   //  justify-content: center
   .car-item.cars-inventory__item
     width: 100%
-  .inventory-sorted
-    width: 30%
+
   .inventory-sorted__params
     padding-right: 0
+  .inventory-sorted
+    width: 40%
 
 @media screen and (max-width: 640px)
   .header.inventory-header

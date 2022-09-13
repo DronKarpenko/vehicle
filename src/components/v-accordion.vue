@@ -6,8 +6,11 @@
         <slot name="title"></slot>
       </h3>
     </div>
-    <div v-show="show" class="accordion-content">
+    <div v-show="show" class="accordion-content" :class="{'absolute-position__content': isAbsolutePosition}">
       <slot name="content"></slot>
+    </div>
+    <div class="accordion-footer">
+      <slot name="accordion-footer"></slot>
     </div>
   </div>
 </template>
@@ -19,6 +22,12 @@ export default {
     return {
       show: false
     };
+  },
+  props: {
+    isAbsolutePosition: {
+      type: Boolean,
+      default: false
+    }
   },
   methods: {
     toggleItem: function() {
@@ -65,4 +74,15 @@ export default {
   letter-spacing: 0.02em
   color: #606276
   margin-bottom: 20px
+.absolute-position__content
+  position: absolute
+  background-color: #fff
+  display: flex
+  flex-direction: column
+  gap: 5px
+  width: 100%
+  left: 0
+  top: 45px
+  box-sizing: border-box
+  border: 1px solid #d7d7d7
 </style>

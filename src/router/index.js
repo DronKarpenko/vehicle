@@ -67,6 +67,11 @@ const routes = [
     path: '/one-car',
     name: 'one-car-page',
     component: () => import('../views/OneCarPage.vue')
+  },
+  {
+    path: '/request',
+    name: 'request-a-car',
+    component: () => import('../views/RequestPage.vue')
   }
 ]
 

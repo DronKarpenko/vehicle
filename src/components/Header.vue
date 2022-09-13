@@ -13,17 +13,19 @@
                 title="Inventory"
             />
           </router-link>
-
+          <router-link to='/request'>
             <v-btn
-              title="Request a car"
+                class="to-request-btn"
+                title="Request a car"
             />
+          </router-link>
 
             <button 
               class="burger-icon" 
               v-bind:class="{ 'menu-open': isMenuVisible }"
               @click="toggleMenu"
             >
-            <span></span>
+              <span></span>
             </button>
 
             <vMenu v-show="isMenuVisible" @openContactForm="openContactForm"/>
@@ -62,6 +64,12 @@ export default {
     },
     closeContactForm(){
       this.isVisibleContacts = false
+    },
+    hideContactForm() {
+      this.isVisibleContacts = false
+    },
+    hideMenu() {
+      this.isMenuVisible = false
     }
   },
   watch: {
@@ -81,6 +89,14 @@ export default {
         document.body.classList.remove(bodyClass);
       }
     }
+  },
+  mounted() {
+    document.addEventListener('click', this.hideContactForm.bind(this), true)
+    document.addEventListener('click', this.hideMenu.bind(this), true)
+  },
+  beforeDestroy() {
+    document.removeEventListener('click', this.hideContactForm)
+    document.removeEventListener('click', this.hideMenu)
   }
 }
 </script>

@@ -2,6 +2,9 @@
     <div class="v-menu">
         <nav class="main-menu">
             <ul class="menu-list">
+                <li class="menu-list__item to-inventory-link" @click="bodyUnLock">
+                  <router-link to='/inventory' class="menu-list__link">Inventory</router-link>
+                </li>
                 <li class="menu-list__item">
                     <button
                         class="menu-list__link"
@@ -119,10 +122,14 @@ export default {
                     fill: #fff
             &:hover
                 opacity: .7
+    .to-inventory-link
+        display: none
 
 @media screen and (max-width: 767.98px)
   .v-menu
     width: 70%
+  .to-inventory-link
+    display: block
 @media screen and (max-width: 459.98px)
   .v-menu
     width: 100%

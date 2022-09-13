@@ -8,6 +8,8 @@
       />
     </div>
 
+    <slot></slot>
+
     <div class="pagination-buttons">
       <div class="page-buttons">
         <button
