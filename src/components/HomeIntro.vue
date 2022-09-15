@@ -9,10 +9,12 @@
                 class="intro-slider"
                 :slider_data="sliderItems"
             />
+          <router-link to='/request'>
             <v-btn
-              :light="true"
-              title="Request a suv"
+                :light = true
+                title="Request a car"
             />
+          </router-link>
         </div>
     </section>
 </template>

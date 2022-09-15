@@ -6,9 +6,11 @@
         <div class="rates-benefits__text">
           <p class="rates-benefits__problem">We want to make simple for you to find the car you want. We also want to make sure you are 100% comfortable with the terms of the conditions of your auto loan.</p>
           <p class="rates-benefits__decision">When you work with VAC, there are never any hidden costs or fees! We lay out all the terms and conditions so that you know exactly what details of the loan are before you sign anything.</p>
-          <v-btn
-            title="Request a Car"
-          />
+          <router-link to='/request'>
+            <v-btn
+                title="Request a car"
+            />
+          </router-link>
         </div>
       </div>
 

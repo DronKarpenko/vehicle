@@ -61,9 +61,11 @@
                         <p class="payment-title">Weekly Payment</p>
                         <p class="payment-price">$ {{((amountLoan/durationLoan)/4).toFixed(0)}}</p>
                     </div>
-                        <v-btn class="calculator-btn"
-                          title="Request a car"
-                        />
+                    <router-link to='/request'>
+                      <v-btn class="calculator-btn"
+                             title="Request a car"
+                      />
+                    </router-link>
                 </div>
             </div>
         </div>

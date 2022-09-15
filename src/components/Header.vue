@@ -8,7 +8,6 @@
         <div class="header-btns">
           <router-link to='/inventory'>
             <v-btn
-                class="first-header-btn to-inventory-btn"
                 :light="true"
                 title="Inventory"
             />
@@ -28,8 +27,16 @@
               <span></span>
             </button>
 
-            <vMenu v-show="isMenuVisible" @openContactForm="openContactForm"/>
-            <v-contact-form v-show="isVisibleContacts" @closeContactForm="closeContactForm"/>
+            <vMenu
+                v-show="isMenuVisible"
+                @openContactForm="openContactForm"
+                @hideMenu="hideMenu"
+            />
+            <v-contact-form
+                v-show="isVisibleContacts"
+                @closeContactForm="closeContactForm"
+                @hideContacts="hideContacts"
+            />
 
         </div>
     </div>
@@ -65,11 +72,11 @@ export default {
     closeContactForm(){
       this.isVisibleContacts = false
     },
-    hideContactForm() {
-      this.isVisibleContacts = false
-    },
     hideMenu() {
       this.isMenuVisible = false
+    },
+    hideContacts() {
+      this.isVisibleContacts = false
     }
   },
   watch: {
@@ -90,14 +97,6 @@ export default {
       }
     }
   },
-  mounted() {
-    document.addEventListener('click', this.hideContactForm.bind(this), true)
-    document.addEventListener('click', this.hideMenu.bind(this), true)
-  },
-  beforeDestroy() {
-    document.removeEventListener('click', this.hideContactForm)
-    document.removeEventListener('click', this.hideMenu)
-  }
 }
 </script>
 
@@ -109,7 +108,7 @@ export default {
   .inventory-title
     font-weight: 700
     font-size: 25px
-    line-height: 140%
+    line-height: 140%m
     letter-spacing: 0.02em
     color: #41456B
     display: none

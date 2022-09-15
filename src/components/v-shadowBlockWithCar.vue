@@ -4,7 +4,7 @@
             <div class="bigShadowBlock">
                 <h2 class="bigShadowBlock-title">{{title}}</h2>
                 <p class="bigShadowBlock-descr">{{description}}</p>
-                <vBtnVue title="Request a Car"/>
+                <router-link to='/request'><vBtnVue title="Request a Car"/></router-link>
             </div>
             <img :src=" require('@/assets/img/cars/' + carPhoto)" alt="carsPhoto" class="bigShadowBlock-carPhoto">
         </div>

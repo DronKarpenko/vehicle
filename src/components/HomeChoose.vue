@@ -6,9 +6,11 @@
                 <h2 class="choose-title">Сhoose your dream vehicle in our catalog</h2>
                 <div class="choose-wrap">
                   <p class="choose-text">In our catalogue there are many models of vehicles. Choose your car to your liking.</p>
-                  <v-btn
-                      title="Inventory"
-                  />
+                  <router-link to='/inventory'>
+                    <v-btn
+                        title="Inventory"
+                    />
+                  </router-link>
                 </div>
             </div>
         </div>

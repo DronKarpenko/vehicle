@@ -12,9 +12,11 @@
         <h2 class="customers-title">Happy customers</h2>
         <p class="customers-text">Since 2017, we have helped thousands of Canadians get their dream vehicles from the comfort of their homes.</p>
         <p class="customers-question">What are you waiting? Get started right now!</p>
-        <v-btn
-            title="Request a Car"
-        />
+        <router-link to='/request'>
+          <v-btn
+              title="Request a Car"
+          />
+        </router-link>
       </div>
       <div class="customers-items">
         <vShadowBlock class="customers-item"

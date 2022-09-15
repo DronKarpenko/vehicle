@@ -1,5 +1,6 @@
 <template>
-    <div class="v-menu">
+  <div class="menu-wrapper" @click="hideMenu">
+    <div @click.stop class="v-menu">
         <nav class="main-menu">
             <ul class="menu-list">
                 <li class="menu-list__item to-inventory-link" @click="bodyUnLock">
@@ -51,6 +52,7 @@
             </div>
         </nav>
     </div>
+  </div>
 </template>
 
 <script>
@@ -68,6 +70,9 @@ export default {
     bodyUnLock: function () {
       let bodyClass = 'lock';
       document.body.classList.remove(bodyClass);
+    },
+    hideMenu() {
+      this.$emit('hideMenu')
     }
   },
 
@@ -124,6 +129,16 @@ export default {
                 opacity: .7
     .to-inventory-link
         display: none
+
+.menu-wrapper
+  position: absolute
+  left: 0
+  top: 0
+  bottom: 0
+  right: 0
+  width: 100%
+  height: 100vh
+  background-color: rgba(0, 0, 0, .5)
 
 @media screen and (max-width: 767.98px)
   .v-menu

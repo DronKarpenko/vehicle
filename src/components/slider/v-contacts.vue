@@ -1,5 +1,6 @@
 <template>
-  <div class="v-contacts">
+  <div class="contacts-wrapper" @click="hideContacts">
+    <div @click.stop class="v-contacts">
     <button class="v-contact__close" @click="closeContactForm"></button>
     <div class="v-contacts__body">
       <div class="contacts-dialog" v-if="formSubmit">
@@ -107,6 +108,7 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -148,6 +150,9 @@ export default {
         this.phone = " ",
         this.email = " "
       }
+    },
+    hideContacts() {
+      this.$emit('hideContacts')
     }
   }
 }
@@ -283,6 +288,16 @@ input.is-invalid
   line-height: 180%
   letter-spacing: 0.02em
   color: #606276
+
+.contacts-wrapper
+  position: absolute
+  left: 0
+  top: 0
+  bottom: 0
+  right: 0
+  width: 100%
+  height: 100vh
+  background-color: rgba(0, 0, 0, .5)
 
 @media screen and (max-width: 1024px)
   .v-contacts

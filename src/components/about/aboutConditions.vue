@@ -13,10 +13,12 @@
       <div class="about-conditions__slogan">
         <h3 class="conditions-slogan__title">We think that VAC is the best way to buy a car in Canada. Try it for yourself and see how much time and money you can save.</h3>
         <p class="conditions-slogan__text">There are never any hidden fees or costs. We never ask you to sign anything until we have explained it clearly and you have had a chance to read it.</p>
-        <v-btn
-            class="conditions-slogan__btn"
-            title="Request a Car"
-        />
+        <router-link to='/request'>
+          <v-btn
+              class="conditions-slogan__btn"
+              title="Request a Car"
+          />
+        </router-link>
       </div>
 
     </div>
